@@ -1,0 +1,40 @@
+common:
+  agent_name: demo-agent-ts
+  language: Python
+  language_version: '3.12'
+  entry_point: entrypoint.py
+  description: 示例 Claude Agent SDK (TypeScript) container - conforms to AgentKit Runtime
+    contract via custom Dockerfile
+  agent_type: Basic App
+  dependencies_file: requirements.txt
+  launch_type: cloud
+  runtime_envs:
+    ANTHROPIC_BASE_URL: https://<litellm-proxy-host>
+    ANTHROPIC_MODEL: claude-sonnet-5
+    ANTHROPIC_SMALL_FAST_MODEL: claude-sonnet-4-6
+    AGENT_ENABLE_MODEL: 'true'
+launch_types:
+  cloud:
+    region: cn-beijing
+    tos_bucket: agentkit-platform-{{account_id}}
+    image_tag: '{{timestamp}}'
+    cr_instance_name: agentkit-platform-{{account_id}}
+    cr_namespace_name: demo-agent
+    cr_repo_name: demo-agent-ts
+    cr_auto_create_instance_type: Micro
+    cr_image_full_url: agentkit-platform-<ACCOUNT_ID>-cn-beijing.cr.volces.com/demo-agent/demo-agent-ts:20260824154253
+    build_timeout: 3600
+    cp_workspace_name: agentkit-cli-workspace
+    cp_pipeline_name: demo-agent-ts
+    cp_pipeline_id: <pipeline-id>
+    project_name: default
+    runtime_id: r-xxxxxxxxxxxxxxxxxxxx
+    runtime_name: demo-agent-ts
+    runtime_role_name: AgentKit_Runtime_Default_ServiceRole_xxxxxxx
+    runtime_auth_type: key_auth
+    runtime_apikey_name: API-KEY-xxxxxxxx
+    runtime_apikey: <REDACTED-API-KEY>
+    runtime_jwt_allowed_clients: []
+    runtime_endpoint: https://xxxxxxxxxxxxxxxxxxxxx.apigateway-cn-beijing.volceapi.com
+docker_build:
+  platform: auto

@@ -1,0 +1,281 @@
+<mxfile host="Electron" agent="AgentKit-verification">
+  <diagram name="验证与排障时序图" id="agentkit-sequence">
+    <mxGraphModel dx="841" dy="629" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=15;fontStyle=1;" value="Claude Agent SDK 接入 AgentKit — 验证与排障时序图" vertex="1">
+          <mxGeometry height="30" width="900" x="40" y="16" as="geometry" />
+        </mxCell>
+        <mxCell id="a_client" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="测试客户端&#xa;curl / M2M" vertex="1">
+          <mxGeometry height="50" width="130" x="60" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a_idp" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="OIDC IdP&#xa;火山用户池" vertex="1">
+          <mxGeometry height="50" width="130" x="290" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a_gw" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="AgentKit 网关&#xa;(验签)" vertex="1">
+          <mxGeometry height="50" width="130" x="520" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a_svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="SDK 容器服务&#xa;server.ts" vertex="1">
+          <mxGeometry height="50" width="130" x="750" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a_llm" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="LiteLLM / Claude" vertex="1">
+          <mxGeometry height="50" width="130" x="980" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a_ops" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" value="运维操作&#xa;agentkit CLI" vertex="1">
+          <mxGeometry height="50" width="130" x="1210" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="l_client" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#6c8ebf;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="110" as="sourcePoint" />
+            <mxPoint x="125" y="1400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l_idp" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#82b366;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="355" y="110" as="sourcePoint" />
+            <mxPoint x="355" y="1400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l_gw" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#82b366;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="585" y="110" as="sourcePoint" />
+            <mxPoint x="585" y="1400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l_svc" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#d6b656;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="815" y="110" as="sourcePoint" />
+            <mxPoint x="815" y="1400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l_llm" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#6c8ebf;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="110" as="sourcePoint" />
+            <mxPoint x="1045" y="1400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l_ops" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#b85450;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1275" y="110" as="sourcePoint" />
+            <mxPoint x="1275" y="1400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ph1" parent="1" style="text;html=1;align=left;fillColor=#e8f5e9;strokeColor=#82b366;fontStyle=1;fontSize=11;rounded=0;" value="阶段 A — R2 JWT 验签 + 身份透传 (echo 模式, 模型关闭)" vertex="1">
+          <mxGeometry height="24" width="1280" x="60" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;" value="① POST /oauth/token  grant_type=client_credentials">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="175" as="sourcePoint" />
+            <mxPoint x="355" y="175" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s2" edge="1" parent="1" style="html=1;endArrow=open;dashed=1;fontSize=10;" value="返回 JWT(RS256): iss=userpool, client_id/aud=client-xxxx, exp">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="355" y="205" as="sourcePoint" />
+            <mxPoint x="125" y="205" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s3" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;strokeWidth=2;" value="② [用例A] POST /invocations  Bearer 有效token + Header user_id=demo-user-001">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="245" as="sourcePoint" />
+            <mxPoint x="585" y="245" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s4" edge="1" parent="1" style="html=1;endArrow=block;dashed=1;fontSize=10;" value="拉 JWKS 验签 iss/aud/exp/签名">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="585" y="275" as="sourcePoint" />
+            <mxPoint x="355" y="275" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s5" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;strokeWidth=2;" value="验签通过 → 透传 Header(user_id)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="585" y="305" as="sourcePoint" />
+            <mxPoint x="815" y="305" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s6" edge="1" parent="1" style="html=1;endArrow=open;dashed=1;fontSize=10;" value="200 {mode:echo, echo.user_id=demo-user-001} ✔ R2 透传成立">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="815" y="335" as="sourcePoint" />
+            <mxPoint x="125" y="335" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s7" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;" value="③ [用例B] POST /invocations  无 Authorization">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="375" as="sourcePoint" />
+            <mxPoint x="585" y="375" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s8" edge="1" parent="1" style="html=1;endArrow=open;dashed=1;fontSize=10;strokeColor=#b85450;" value="401 JWT authentication failed. (未到达容器) ✔ 边缘拦截">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="585" y="405" as="sourcePoint" />
+            <mxPoint x="125" y="405" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;" value="④ [用例C] POST /invocations  Bearer garbage.jwt.token">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="445" as="sourcePoint" />
+            <mxPoint x="585" y="445" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s10" edge="1" parent="1" style="html=1;endArrow=open;dashed=1;fontSize=10;strokeColor=#b85450;" value="401 JWT authentication failed. (验签失败) ✔ 拒签">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="585" y="475" as="sourcePoint" />
+            <mxPoint x="125" y="475" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="noteA" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=8;" value="阶段A 结论: A=200 / B=401 / C=401 三态成立 → JWT 验签 + 身份透传通过" vertex="1">
+          <mxGeometry height="30" width="1280" x="60" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="ph2" parent="1" style="text;html=1;align=left;fillColor=#e8f5e9;strokeColor=#82b366;fontStyle=1;fontSize=11;rounded=0;" value="阶段 B — L4 真实模型链路 (先证伪后证实)" vertex="1">
+          <mxGeometry height="24" width="1280" x="60" y="545" as="geometry" />
+        </mxCell>
+        <mxCell id="s11" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;strokeColor=#b85450;" value="⑤ runtime update(AGENT_ENABLE_MODEL=true + sk-token) → release">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1275" y="590" as="sourcePoint" />
+            <mxPoint x="815" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s12" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;" value="⑥ GET /net-probe (探海外链接, 不需要Token额度)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="125" y="625" as="sourcePoint" />
+            <mxPoint x="815" y="625" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s13" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;" value="GET /v1/models">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="815" y="655" as="sourcePoint" />
+            <mxPoint x="1045" y="655" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s14" edge="1" parent="1" style="html=1;endArrow=open;dashed=1;fontSize=10;strokeColor=#b85450;" value="reachable:true / 401 (token 误填为域名, 非 sk-) — 网络通, 凭证错">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="685" as="sourcePoint" />
+            <mxPoint x="125" y="685" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s15" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;strokeColor=#b85450;" value="⑦ 修正 ANTHROPIC_AUTH_TOKEN=sk-... → update → release">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1275" y="715" as="sourcePoint" />
+            <mxPoint x="815" y="715" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s16" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;" value="⑧ GET /net-probe 复验">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="745" as="sourcePoint" />
+            <mxPoint x="1045" y="745" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s17" edge="1" parent="1" style="html=1;endArrow=open;dashed=1;fontSize=10;" value="200 /v1/models 含 claude-sonnet-5 ✔ 出海+key+模型可见">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="775" as="sourcePoint" />
+            <mxPoint x="125" y="775" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="noteB1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;" value="先证伪: net-probe 把&quot;网络出海&quot;与&quot;凭证有效&quot;两层先证清, 不烧模型额度, 再进真实调用" vertex="1">
+          <mxGeometry height="28" width="1280" x="60" y="795" as="geometry" />
+        </mxCell>
+        <mxCell id="ph3" parent="1" style="text;html=1;align=left;fillColor=#fde7e9;strokeColor=#b85450;fontStyle=1;fontSize=11;rounded=0;" value="阶段 C — 真实调用排障: root 拦截 → IS_SANDBOX → 热实例陷阱" vertex="1">
+          <mxGeometry height="24" width="1280" x="60" y="835" as="geometry" />
+        </mxCell>
+        <mxCell id="s18" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;" value="⑨ POST /invocations (Bearer 有效token) 真实 query()">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="875" as="sourcePoint" />
+            <mxPoint x="815" y="875" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s19" edge="1" parent="1" style="html=1;endArrow=open;dashed=1;fontSize=10;strokeColor=#b85450;" value="200 mode:echo-fallback  error: Claude Code process exited with code 1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="815" y="905" as="sourcePoint" />
+            <mxPoint x="125" y="905" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s20" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;" value="⑩ POST /invoke-debug (spawn 隔离, 抓 stderr)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="935" as="sourcePoint" />
+            <mxPoint x="815" y="935" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s21" edge="1" parent="1" style="html=1;endArrow=open;dashed=1;fontSize=10;strokeColor=#b85450;" value="exit_code:1  stderr: --dangerously-skip-permissions cannot be used with root">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="815" y="965" as="sourcePoint" />
+            <mxPoint x="125" y="965" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="noteC1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;" value="定位: 平台以 root 启动容器(忽略 Dockerfile USER), CLI 在 root 下拒绝 bypassPermissions → exit 1" vertex="1">
+          <mxGeometry height="28" width="1280" x="60" y="985" as="geometry" />
+        </mxCell>
+        <mxCell id="s22" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;strokeColor=#b85450;" value="⑪ runtime update(IS_SANDBOX=1) → release">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1275" y="1030" as="sourcePoint" />
+            <mxPoint x="815" y="1030" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s23" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;" value="⑫ POST /invoke-debug (立即重试)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="1060" as="sourcePoint" />
+            <mxPoint x="815" y="1060" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s24" edge="1" parent="1" style="html=1;endArrow=open;dashed=1;fontSize=10;strokeColor=#b85450;" value="exit_code:1 依旧报 root — 命中 IS_SANDBOX 之前的旧热实例">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="815" y="1090" as="sourcePoint" />
+            <mxPoint x="125" y="1090" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="noteC2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;" value="热实例陷阱: MinInstance:0 时旧实例仍保温, 请求命中旧进程(无 IS_SANDBOX)。静默等待冷启动, 期间勿反复请求" vertex="1">
+          <mxGeometry height="28" width="1280" x="60" y="1110" as="geometry" />
+        </mxCell>
+        <mxCell id="s25" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;" value="⑬ 静默等待数分钟(冷启动) → POST /invoke-debug">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="1150" as="sourcePoint" />
+            <mxPoint x="815" y="1150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s26" edge="1" parent="1" style="html=1;endArrow=open;dashed=1;fontSize=10;" value="exit_code:0  stdout: &quot;Hi! ...&quot; ✔ root 检查已绕过, CLI 真实调模型">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="815" y="1180" as="sourcePoint" />
+            <mxPoint x="125" y="1180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ph4" parent="1" style="text;html=1;align=left;fillColor=#e8f5e9;strokeColor=#82b366;fontStyle=1;fontSize=11;rounded=0;" value="阶段 D — 端到端收官 (R1+R2+L4 同时证实)" vertex="1">
+          <mxGeometry height="24" width="1280" x="60" y="1205" as="geometry" />
+        </mxCell>
+        <mxCell id="s27" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;strokeWidth=2;" value="⑭ POST /invocations  Bearer 有效token + user_id=demo-user-001  prompt:你在为哪个 user_id 服务?">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="1250" as="sourcePoint" />
+            <mxPoint x="585" y="1250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s28" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;" value="验签通过 → 透传 → query()">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="585" y="1280" as="sourcePoint" />
+            <mxPoint x="815" y="1280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s29" edge="1" parent="1" style="html=1;endArrow=block;fontSize=10;" value="海外调用 (sk-token)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="815" y="1310" as="sourcePoint" />
+            <mxPoint x="1045" y="1310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s30" edge="1" parent="1" style="html=1;endArrow=open;dashed=1;fontSize=10;" value="模型回复">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="1340" as="sourcePoint" />
+            <mxPoint x="815" y="1340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s31" edge="1" parent="1" style="html=1;endArrow=open;dashed=1;fontSize=10;strokeWidth=2;" value="200 mode:agent  output:&quot;我在为 user_id=&quot;demo-user-001&quot; 服务。&quot;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="815" y="1370" as="sourcePoint" />
+            <mxPoint x="125" y="1370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="noteD" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;align=left;spacingLeft=8;" value="收官结论: 一次调用同时闭合 JWT验签 → 身份透传(贯穿至模型上下文) → 真实模型调用。R1+R2+L4 全部成立。" vertex="1">
+          <mxGeometry height="30" width="1280" x="60" y="1395" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

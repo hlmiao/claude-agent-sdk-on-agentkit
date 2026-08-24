@@ -1,0 +1,125 @@
+<mxfile host="Electron" agent="AgentKit-verification">
+  <diagram name="AgentKit-验证架构与测试流程" id="agentkit-verify">
+    <mxGraphModel dx="1009" dy="755" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;whiteSpace=wrap;" value="Claude Agent SDK 接入 AgentKit — 验证架构与测试流程&lt;br&gt;R1 容器纳管 · R2 JWT 验签+身份透传 · L4 真实模型链路" vertex="1">
+          <mxGeometry height="50" width="820" x="40" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="client" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="测试客户端&#xa;(curl / Postman)&#xa;M2M 客户端 m2m-client-xxxx" vertex="1">
+          <mxGeometry height="70" width="240" x="120" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="idp" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=10;verticalAlign=top;spacingTop=8;" value="OIDC IdP — 火山用户池&#xa;userpool-xxxxxxxx-... (RS256)&#xa;&#xa;token_endpoint  /oauth/token&#xa;jwks_uri  /keys&#xa;discovery  /.well-known/openid-configuration" vertex="1">
+          <mxGeometry height="130" width="300" x="600" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="gw" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=10;verticalAlign=top;spacingTop=8;" value="AgentKit API 网关 (平台托管)&#xa;apigateway-cn-beijing.volceapi.com&#xa;&#xa;JWT 边缘验签: 校验 iss / aud / exp / client_id&#xa;allowed_clients 白名单" vertex="1">
+          <mxGeometry height="110" width="330" x="120" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=10;verticalAlign=top;spacingTop=8;" value="容器 Runtime (veFaaS)&#xa;r-xxxxxxxxxxxxxxxxxxxx · custom_jwt · MinInstance:0&#xa;注意: 平台以 root 启动容器 (忽略 Dockerfile USER)" vertex="1">
+          <mxGeometry height="80" width="330" x="120" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=10;verticalAlign=top;spacingTop=8;" value="SDK 容器服务 (server.ts, TS / Claude Agent SDK)&#xa;监听 0.0.0.0:8000&#xa;&#xa;GET  /ping         健康探活 (契约)&#xa;POST /invocations  主入口: 读身份 + query() 调模型&#xa;GET  /net-probe    出海可达性探针 (不烧额度)&#xa;POST /invoke-debug CLI 隔离诊断 (spawn, 抓 exit_code/stderr)" vertex="1">
+          <mxGeometry height="160" width="380" x="120" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="litellm" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;spacingLeft=10;verticalAlign=top;spacingTop=8;" value="LiteLLM Proxy&lt;br&gt;litellm-example.com&lt;br&gt;别名 claude-sonnet-5 / claude-sonnet-4-6" vertex="1">
+          <mxGeometry height="80" width="300" x="600" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="claude" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="Claude 模型&#xa;(claude-sonnet-5)" vertex="1">
+          <mxGeometry height="60" width="300" x="600" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="client" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" target="idp" value="① client_credentials 取 token">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1b" edge="1" parent="1" source="idp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;dashed=1;" target="client" value="返回 JWT (RS256, sub=client 自身)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480" y="150" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="client" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;strokeWidth=2;" target="gw" value="② 携带 Bearer token + Header user_id&#xa;POST /invocations">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="gw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;dashed=1;strokeWidth=1.5;" target="idp" value="③ 拉 JWKS 验签">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="400.07" y="200.07" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="gw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;strokeWidth=2;" target="runtime" value="④ 验签通过: 透传 Header&#xa;Authorization / user_id / session_id">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="runtime" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" target="svc" value="转发进容器">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="svc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;strokeWidth=2;" target="litellm" value="⑤ 海外调用 (net-probe / query)&lt;br&gt;Bearer sk-... (LiteLLM Virtual Key)">
+          <mxGeometry relative="1" x="-0.2308" y="-42" as="geometry">
+            <mxPoint x="30" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="litellm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" target="claude" value="转发">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="stageTitle" parent="1" style="text;html=1;align=center;fontStyle=1;fontSize=13;" value="验证结论" vertex="1">
+          <mxGeometry height="24" width="280" x="960" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="r1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" value="R1 容器纳管 — 通过&#xa;非 Python 镜像纳管 → 发布 Ready → /ping Healthy" vertex="1">
+          <mxGeometry height="60" width="280" x="960" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="r2a" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" value="R2-a JWT 验签 — 通过&#xa;A 有效 token = 200&#xa;B 无 token = 401 (网关层文案)&#xa;C 伪造 token = 401&#xa;三态证明边缘拦截生效" vertex="1">
+          <mxGeometry height="95" width="280" x="960" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="r2b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" value="R2-b 身份透传 — 通过&#xa;echo 与 agent 两路径均回显&#xa;user_id=demo-user-001" vertex="1">
+          <mxGeometry height="70" width="280" x="960" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="l4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" value="L4 真实模型链路 — 通过&#xa;net-probe reachable:true / 200&#xa;/v1/models 含 claude-sonnet-5&#xa;mode:&quot;agent&quot; 真实回答且复述 user_id" vertex="1">
+          <mxGeometry height="90" width="280" x="960" y="415" as="geometry" />
+        </mxCell>
+        <mxCell id="lr1" edge="1" parent="1" source="r1" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#BD7000;endArrow=none;fillColor=#f0a30a;strokeWidth=1.5;" target="runtime">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="940.07" y="175" />
+              <mxPoint x="940.07" y="90.03" />
+              <mxPoint x="80" y="90.03" />
+              <mxPoint x="80" y="510.1" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lr2a" edge="1" parent="1" source="r2a" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#BD7000;endArrow=none;fillColor=#f0a30a;strokeWidth=1.5;" target="gw">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="705" y="267.53" />
+              <mxPoint x="705" y="330.07" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lr2b" edge="1" parent="1" source="r2b" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#BD7000;endArrow=none;fillColor=#f0a30a;strokeWidth=1.5;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" target="svc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="520.07" y="365" />
+              <mxPoint x="520.07" y="650.03" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ll4" edge="1" parent="1" source="l4" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#BD7000;endArrow=none;strokeWidth=1.5;fillColor=#f0a30a;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="litellm">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="opsTitle" parent="1" style="text;html=1;align=left;fontStyle=1;fontSize=13;" value="关键运维要点 (复制部署必读)" vertex="1">
+          <mxGeometry height="24" width="380" x="120" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="ops1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" value="① IS_SANDBOX=1 是 L4 硬前提&#xa;veFaaS 以 root 启动容器，Claude Code CLI 在 root 下拒绝 bypassPermissions (exit 1)。&#xa;注入 IS_SANDBOX=1 绕过；最稳做法是写进 Dockerfile 的 ENV。&#xa;判据: /invoke-debug exit_code 由 1 变 0、stdout 出现模型回复。" vertex="1">
+          <mxGeometry height="90" width="380" x="120" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="ops2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" value="② 热实例陈旧陷阱&#xa;MinInstance:0 时 update+release 不立即作用于保温中的旧实例，&#xa;紧接着的请求可能命中旧实例，误判为配置未生效。&#xa;需静默等待冷启动，等待期间勿反复请求 (每次请求都会续命旧实例)。" vertex="1">
+          <mxGeometry height="90" width="380" x="520" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="ops3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" value="③ 环境变量注入约束&#xa;ANTHROPIC_AUTH_TOKEN 须为 sk- 开头的纯 ASCII Virtual Key；&#xa;runtime update --envs-json 为整体替换 (须带全套 env)；&#xa;改 env 后必须 runtime release 才下发到实例。" vertex="1">
+          <mxGeometry height="90" width="320" x="920" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="scope" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=middle;dashed=1;" value="未覆盖 (据实标注): 透传身份的&quot;可信性&quot;未验证 — 当前 user_id 由调用方 Header 自带、非 token 派生。&#xa;防冒充需客户应用层做 S2S token 兑换 (client_credentials + target_user_id)，属客户自建、非 AgentKit 能力。" vertex="1">
+          <mxGeometry height="45" width="1120" x="120" y="945" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

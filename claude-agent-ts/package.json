@@ -1,0 +1,22 @@
+{
+  "name": "demo-agent-ts",
+  "version": "1.0.0",
+  "description": "Claude Agent SDK (TypeScript) container conforming to AgentKit Runtime contract (/invocations + /ping on :8000)",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "tsx src/server.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.1.0",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.0",
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.0"
+  }
+}
