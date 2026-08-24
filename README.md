@@ -1,6 +1,6 @@
 # Claude Agent SDK 接入 AgentKit — 能力验证
 
-本仓库记录并复现「基于 Claude Agent SDK 开发的 Agent 容器，能否直接由火山引擎 AgentKit 平台纳管并复用平台鉴权」的验证过程与结论。
+本仓库记录并复现「基于 Claude Agent SDK 开发的 Agent 容器，能否直接由 AgentKit 平台纳管并复用平台鉴权」的验证过程与结论。
 
 - 项目背景：示例 Agent Platform
 - 验证对象：AgentKit Runtime 对通用容器的纳管能力、网关 JWT 边缘验签与用户身份透传能力
