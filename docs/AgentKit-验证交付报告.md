@@ -8,7 +8,7 @@
 
 ## 1. 背景与验证目标
 
-客户团队基于 Claude Agent SDK 开发 Agent，需确认能否直接由火山 AgentKit 平台纳管并复用平台鉴权，
+客户团队基于 Claude Agent SDK 开发 Agent，需确认能否直接由 AgentKit 平台纳管并复用平台鉴权，
 避免为适配平台而重写 Agent。据此定义两项必选需求：
 
 - R1（容器纳管）：AgentKit Runtime 能部署并运行符合通用容器契约的 Claude Agent SDK Docker 镜像，
@@ -28,7 +28,7 @@
 | Runtime（JWT 鉴权） | `r-xxxxxxxxxxxxxxxxxxxx`（key_auth，对照）/ `r-xxxxxxxxxxxxxxxxxxxx`（custom_jwt） |
 | JWT Runtime Endpoint | `https://xxxxxxxxxxxxxxxxxxxxx.apigateway-cn-beijing.volceapi.com` |
 | 容器镜像 | `.../demo-agent/demo-agent-ts:20260824154253`（TypeScript / Claude Agent SDK） |
-| OIDC IdP | 火山 Agent Identity 用户池 `userpool-xxxxxxxx-...`（OIDC / JWKS，RS256） |
+| OIDC IdP | Agent Identity 用户池 `userpool-xxxxxxxx-...`（OIDC / JWKS，RS256） |
 | M2M 客户端 | `<m2m-client-id>`（client_credentials） |
 | 模型网关 | LiteLLM Proxy `https://<litellm-proxy-host>`（别名 claude-sonnet-5 / claude-sonnet-4-6） |
 | 容器契约 | 监听 8000；`GET /ping`；`POST /invocations`；诊断端点 `GET /net-probe`、`POST /invoke-debug` |
