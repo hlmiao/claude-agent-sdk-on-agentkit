@@ -1,8 +1,7 @@
 # 示例 Claude Agent SDK 接入 AgentKit — 能力验证交付报告
 
-- 项目：示例 Agent Platform (脱敏)
+- 项目：示例 Agent Platform
 - 验证对象：AgentKit Runtime 对 Claude Agent SDK 容器的纳管能力与网关鉴权/身份透传能力
-- 验证日期：2026-08-24
 - 结论：核心需求 R1、R2 全部验证通过；附加项 L4（真实模型链路）端到端打通
 
 ---
@@ -18,7 +17,7 @@
   经 HTTP Header 透传至容器内服务。
 
 附加项 L4（真实模型链路）：容器从 cn-beijing 出海，经 LiteLLM Proxy 调用 Claude 并返回。
-该项非必选（国内出海受限，设计上支持优雅降级），本次一并验证通过。
+该项非必选（设计上支持优雅降级），本次一并验证通过。
 
 ---
 
