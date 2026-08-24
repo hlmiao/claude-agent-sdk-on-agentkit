@@ -2,12 +2,11 @@
 
 本仓库记录并复现「基于 Claude Agent SDK 开发的 Agent 容器，能否直接由火山引擎 AgentKit 平台纳管并复用平台鉴权」的验证过程与结论。
 
-- 项目背景：示例 Agent Platform (脱敏)
+- 项目背景：示例 Agent Platform
 - 验证对象：AgentKit Runtime 对通用容器的纳管能力、网关 JWT 边缘验签与用户身份透传能力
-- 验证日期：2026-08-24
 - 结论：核心需求 R1、R2 全部通过；附加项 L4（真实模型链路）端到端打通
 
-> 脱敏说明：本仓库为公开分享版本，所有账号 ID、Runtime ID、网关 Endpoint、镜像仓库、Pipeline ID、API Key、用户池 / M2M 客户端等真实标识均已替换为占位符（如 `<ACCOUNT_ID>`、`r-xxxxxxxxxxxxxxxxxxxx`、`<REDACTED-API-KEY>`）。占位符不影响对验证方法与结论的理解。
+> 说明：本仓库为公开分享版本，所有账号 ID、Runtime ID、网关 Endpoint、镜像仓库、Pipeline ID、API Key、用户池 / M2M 客户端等真实标识均已替换为占位符（如 `<ACCOUNT_ID>`、`r-xxxxxxxxxxxxxxxxxxxx`、`<REDACTED-API-KEY>`）。占位符不影响对验证方法与结论的理解。
 
 ---
 
