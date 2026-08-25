@@ -73,7 +73,23 @@
 
 ---
 
-## 7. 仓库结构
+## 7. 关键难点与解决
+
+难点不在“部署一个容器”，而在于让一个平台未曾为之设计的框架（Claude Agent SDK 及其 spawn 的 `claude` CLI 二进制）在受限运行时（veFaaS 强制 root、无常规日志）里跑通。约束叠加、错误信号模糊、排障工具缺失，真正的工作量在“造探针撬开黑盒”和“逐层证伪定位真实死因”。
+
+| 难点 | 表现 | 突破 |
+| --- | --- | --- |
+| Root 拦截（决定性） | veFaaS 强制 root 与 CLI 拒绝 root 正面冲突，容器可启动但一调模型即 500 | 注入 `IS_SANDBOX=1` 绕过 CLI 的 root 检查 |
+| 排障盲区 | `agentkit logs` 对通用容器不可用，CLI 子进程死因被吞 | 自建 `/net-probe`、`/invoke-debug` 探针抓真实 `stderr` / 退出码 |
+| 进程级脆弱 | 子进程崩溃默认带走整个 Node 服务，`/ping` 一并失联 | `uncaughtException` 兜底 + `AbortController` 超时，存活与模型解耦 |
+| 配置注入陷阱 | launch 覆盖 env、整体替换、热实例陈旧，“改了却没变” | 非敏感项写 `agentkit.yaml`、敏感项走 update、等冷启动 |
+| 出海 + 网关黑盒 | 国内出海受限、入站网关不可见，多因叠加难定位 | “先证伪后证实”：先用 `/net-probe` 证清网络与凭证两层 |
+
+逐项分析与判定线索见交付报告：[docs/AgentKit-验证交付报告.md](docs/AgentKit-验证交付报告.md) 第 6 节。
+
+---
+
+## 8. 仓库结构
 
 ```
 .
@@ -84,7 +100,6 @@
 │   └── agentkit.yaml             # 部署配置与非敏感环境变量
 ├── docs/
 │   ├── AgentKit-验证交付报告.md
-│   ├── *.drawio                  # 四张图源文件（可用 diagrams.net 编辑）
 │   └── images/*.png              # 四张图导出（供 README / GitHub 渲染）
 ├── sample-agent/                 # AgentKit Python 模板（对照参考）
 └── scripts/                      # STS 取凭证等辅助脚本
@@ -101,7 +116,7 @@
 
 ---
 
-## 8. 关键运维要点（复制部署必读）
+## 9. 关键运维要点（复制部署必读）
 
 - **`IS_SANDBOX=1` 是 L4 硬前提**：veFaaS 以 root 启动容器（忽略 Dockerfile 的 `USER`），Claude Code CLI 在 root 下拒绝 `bypassPermissions` 而 `exit 1`。注入 `IS_SANDBOX=1` 绕过；最稳做法是写进 Dockerfile 的 `ENV`。判据：`/invoke-debug` 的 `exit_code` 由 1 变 0、stdout 出现模型回复。
 - **配置变更后等旧热实例回收**：`MinInstance:0` 时 `runtime update` + `release` 不立即作用于保温中的旧实例，紧接着的请求可能命中旧实例误判为「未生效」。需静默等待冷启动，等待期间勿反复请求（每次请求都会续命旧实例）。
@@ -109,7 +124,7 @@
 
 ---
 
-## 9. 未覆盖范围与安全提醒
+## 10. 未覆盖范围与安全提醒
 
 - **身份透传的「可信性」未验证**：本次 `user_id` 由调用方通过 Header 自带、非从 token 派生。「受信后端代调用」信任模型下为生产可用设计；若威胁模型要求「防冒充」，需在客户应用层补充 S2S token 兑换（`client_credentials + target_user_id`），该机制属客户自建、非 AgentKit 平台能力。
 - **边界健壮性**（过期 token、白名单外 client、非 JSON body、冷启动延迟收敛）为可选加固项，本次未执行。
