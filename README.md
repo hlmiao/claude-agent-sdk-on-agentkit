@@ -51,7 +51,7 @@
 
 ## 4. 部署构建拓扑
 
-`agentkit launch` 一键发布链路：本地源码/镜像 → 平台构建资源（TOS / Pipeline / CR / Runtime）→ 发布就绪，外部依赖 OIDC IdP 与模型网关分列上方。
+`agentkit launch` 一键发布链路：本地源码/镜像 → 平台构建资源（TOS / Pipeline / CR / Runtime）→ 发布就绪，外部依赖 OIDC IdP 与模型网关见下图。
 
 ![部署构建拓扑图](docs/images/AgentKit-部署构建拓扑图.png)
 
